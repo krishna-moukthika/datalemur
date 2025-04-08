@@ -23,14 +23,14 @@ tweet_bucket	users_num
 Explanation:
 Based on the example output, two users posted only one tweet in 2022, and one user who posted two tweets in 2022. The query groups the users by the number of tweets they posted and displays the number of users in each group.
 */
-SELECT 
-  user_id, 
-  COUNT(tweet_id) AS tweets_num 
-FROM tweets 
-WHERE tweet_date BETWEEN '2022-01-01' AND '2022-12-31' 
-GROUP BY user_id;SELECT 
-  user_id, 
-  COUNT(tweet_id) AS tweets_num 
-FROM tweets 
-WHERE tweet_date BETWEEN '2022-01-01' AND '2022-12-31' 
-GROUP BY user_id;
+WITH tc AS (
+SELECT user_id,
+  COUNT(tweet_id) AS tweet_count
+FROM tweets
+WHERE EXTRACT(YEAR FROM tweet_date) = 2022
+GROUP BY user_id
+)
+SELECT tweet_count, COUNT(user_id)
+FROM tc
+GROUP BY tweet_count
+ORDER BY tweet_count ASC;
